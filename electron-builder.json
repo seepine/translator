@@ -10,7 +10,7 @@
     "package.json"
   ],
   "mac": {
-    "icon": "src/renderer/public/logo.png",
+    "icon": "src/renderer/public/app-logo.png",
     "artifactName": "${productName}_${version}.${ext}",
     "target": [
       "dmg"

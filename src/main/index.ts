@@ -1,12 +1,21 @@
 import os from 'os'
 import path from 'path'
-import { app, BrowserWindow, ipcMain, Menu, nativeTheme, systemPreferences, Tray } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  nativeTheme,
+  systemPreferences,
+  Tray,
+  nativeImage
+} from 'electron'
 import ipcInit from './ipc-init'
 
 // https://stackoverflow.com/questions/42524606/how-to-get-windows-version-using-node-js
 const isWin7 = os.release().startsWith('6.1')
 if (isWin7) app.disableHardwareAcceleration()
-
+app.dock.hide()
 if (!app.requestSingleInstanceLock()) {
   app.quit()
   process.exit(0)
@@ -65,29 +74,9 @@ try {
   // eslint-disable-next-line no-empty
 } catch (e) {}
 
-let tray = null
+const tray = null
 app.whenReady().then(() => {
   bootstrap()
-  tray = new Tray(path.join(__dirname, '../renderer/icon.png'))
-  tray.on('double-click', () => {
-    win?.show()
-  })
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: '显示',
-      click: () => {
-        win?.show()
-      }
-    },
-    {
-      label: '退出',
-      click: () => {
-        process.exit(0)
-      }
-    }
-  ])
-  tray.setToolTip('translator')
-  tray.setContextMenu(contextMenu)
 })
 
 app.on('window-all-closed', () => {
@@ -104,7 +93,6 @@ app.on('second-instance', () => {
     win.focus()
   }
 })
-
 // @TODO
 // auto update
 /* if (app.isPackaged) {
