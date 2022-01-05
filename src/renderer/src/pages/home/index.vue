@@ -91,9 +91,58 @@ const handleCopy = (index: number) => {
   }
 }
 
+const toTranslate = () => {
+  if (inputValue.value) {
+    activeKeys.value = []
+    const to = /.*[\u4e00-\u9fa5]+.*$/.test(inputValue.value) ? 'en' : 'zh'
+    for (let i = 0; i < services.value.length; i += 1) {
+      const item = services.value[i]
+      loadingList.value[i] = true
+      resList.value[i] = ''
+      try {
+        item
+          .translate(
+            {
+              src: inputValue.value,
+              from: 'auto',
+              option: {
+                ...item.option
+              },
+              to
+            },
+            {
+              axios,
+              crypto,
+              crypto2
+            }
+          )
+          .then((res) => {
+            resList.value[i] = res.dst
+          })
+          .catch((err) => {
+            resList.value[i] = `Error:\n${err.message ? err.message : err}`
+          })
+          .finally(() => {
+            activeKeys.value.push(i)
+            loadingList.value[i] = false
+          })
+      } catch (err: any) {
+        resList.value[i] = `Error:\n${err.message}`
+        activeKeys.value.push(i)
+        loadingList.value[i] = false
+      }
+    }
+  }
+}
+
 let leftTime = new Date().getTime()
 let cTime = new Date().getTime()
 const keyListen = (e: KeyboardEvent) => {
+  if (e.code === 'Enter' || e.code === 'NumpadEnter') {
+    e.preventDefault()
+    toTranslate()
+    return false
+  }
   if (e.code === 'ControlLeft') {
     leftTime = new Date().getTime()
   } else if (e.code === 'KeyC') {
@@ -101,51 +150,8 @@ const keyListen = (e: KeyboardEvent) => {
     if (cTime > leftTime && cTime - leftTime < 200) {
       handleCopy(0)
     }
-  } else if (e.code === 'Enter' || e.code === 'NumpadEnter') {
-    e.preventDefault()
-    if (inputValue.value) {
-      activeKeys.value = []
-      const to = /.*[\u4e00-\u9fa5]+.*$/.test(inputValue.value) ? 'en' : 'zh'
-      for (let i = 0; i < services.value.length; i += 1) {
-        const item = services.value[i]
-        loadingList.value[i] = true
-        resList.value[i] = ''
-        try {
-          item
-            .translate(
-              {
-                src: inputValue.value,
-                from: 'auto',
-                option: {
-                  ...item.option
-                },
-                to
-              },
-              {
-                axios,
-                crypto,
-                crypto2
-              }
-            )
-            .then((res) => {
-              resList.value[i] = res.dst
-            })
-            .catch((err) => {
-              resList.value[i] = `Error:\n${err.message ? err.message : err}`
-            })
-            .finally(() => {
-              activeKeys.value.push(i)
-              loadingList.value[i] = false
-            })
-        } catch (err: any) {
-          resList.value[i] = `Error:\n${err.message}`
-          activeKeys.value.push(i)
-          loadingList.value[i] = false
-        }
-      }
-    }
-
-    return false
+  } else if (e.code === 'Escape') {
+    window.ipcRenderer.send('hide')
   }
   return true
 }

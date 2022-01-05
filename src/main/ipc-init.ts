@@ -28,6 +28,9 @@ export default (win: BrowserWindow) => {
       clipboard.writeText(value)
     }
   })
+  ipcMain.on('hide', () => {
+    win?.hide()
+  })
   ipcMain.handle('set-always-on-top', (e, flag) => {
     if (flag !== undefined) {
       win?.setAlwaysOnTop(flag)

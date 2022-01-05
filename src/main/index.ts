@@ -14,8 +14,9 @@ import ipcInit from './ipc-init'
 
 // https://stackoverflow.com/questions/42524606/how-to-get-windows-version-using-node-js
 const isWin7 = os.release().startsWith('6.1')
+const isMac = process.platform === 'darwin'
 if (isWin7) app.disableHardwareAcceleration()
-app.dock.hide()
+if (isMac) app.dock.hide()
 if (!app.requestSingleInstanceLock()) {
   app.quit()
   process.exit(0)
@@ -30,6 +31,7 @@ async function bootstrap() {
     frame: false,
     transparent: true,
     resizable: false,
+    hasShadow: false,
     show: false,
     skipTaskbar: true,
     width: 440,
@@ -74,8 +76,39 @@ try {
   // eslint-disable-next-line no-empty
 } catch (e) {}
 
-const tray = null
+let tray = null
+
+const initTray = () => {
+  nativeImage
+    .createThumbnailFromPath(path.join(__dirname, '../renderer/icon.png'), {
+      width: 15,
+      height: 15
+    })
+    .then((res) => {
+      tray = new Tray(res)
+      tray.on('double-click', () => {
+        win?.show()
+      })
+      const contextMenu = Menu.buildFromTemplate([
+        {
+          label: '显示',
+          click: () => {
+            win?.show()
+          }
+        },
+        {
+          label: '退出',
+          click: () => {
+            process.exit(0)
+          }
+        }
+      ])
+      tray.setToolTip('translator')
+      tray.setContextMenu(contextMenu)
+    })
+}
 app.whenReady().then(() => {
+  initTray()
   bootstrap()
 })
 
