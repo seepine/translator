@@ -1,21 +1,24 @@
 <template>
-  <navbar-vue class="nav"></navbar-vue>
-  <div class="body px-sm pb-sm">
-    <router-view> </router-view>
+  <div class="container">
+    <navbar-vue class="nav"></navbar-vue>
+    <div class="body px-sm pb-sm">
+      <router-view> </router-view>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import navbarVue from './navbar.vue'
 </script>
 <style lang="scss">
+.container {
+  overflow: hidden;
+  border: 1px solid rgba(var(--gray-3), 0.6);
+  border-radius: 12px;
+  background-color: transparent;
+}
 .nav,
 .body {
   background-color: #ffffff !important;
-  // box-shadow: 0 4px 10px rgba(var(--gray-1), 0.4);
-}
-.body {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
 }
 .arco-collapse-item-header {
   line-height: 20px !important;
