@@ -37,6 +37,13 @@
             @click="handleCopy(index)"
           />
         </a-tooltip>
+
+        <icon-sound
+          v-if="resList[index]"
+          class="pt-sm px-sm"
+          @click="handlePlay(index)"
+          style="cursor: pointer; margin-left: -18px"
+        />
       </a-collapse-item>
     </a-collapse>
   </a-space>
@@ -90,7 +97,15 @@ const handleCopy = (index: number) => {
     }, 1500)
   }
 }
-
+const handlePlay = (index: number) => {
+  if (resList.value[index]) {
+    speechSynthesis.cancel()
+    const u = new SpeechSynthesisUtterance()
+    u.text = resList.value[index]
+    u.volume = 0.8
+    speechSynthesis.speak(u)
+  }
+}
 const toTranslate = () => {
   if (inputValue.value) {
     activeKeys.value = []
