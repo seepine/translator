@@ -22,7 +22,7 @@ translator 默认自带了百度翻译试用版，可以直接使用，无需额
 
 ### 1.编写插件
 
-在用户缓存目录添加插件文件夹和 js 程序，例如在windows系统下的
+在用户缓存目录添加插件文件夹和 js 程序，例如在 windows 系统下的
 `C:\Users\seepine\AppData\Roaming\translator\plugs\youdao\index.js`
 ，其中 plugs 目录需要自己新建，youdao 则是插件名，重点在于 index.js 文件，插件展示名和 logo、逻辑等在此文件编写，下述以百度翻译为例讲解插件如何编写
 
@@ -87,9 +87,9 @@ const plug = {
   translate: (input, ctx) => {
     return new Promise((RES, REJ) => {
       const salt = new Date().getTime()
-      const sign = ctx.crypto
-        .MD5(`${input.option.appid}${input.src}${salt}${input.option.secret}`)
-        .toString()
+      const sign = ctx.crypto.enc.Hex.stringify(
+        ctx.crypto.MD5(`${input.option.appid}${input.src}${salt}${input.option.secret}`)
+      )
       ctx
         .axios({
           url: 'http://api.fanyi.baidu.com/api/trans/vip/translate',
@@ -105,7 +105,7 @@ const plug = {
         .then((res) => {
           if (res.status === 200) {
             if (res.data.to === input.to && res.data.trans_result) {
-              // 返回翻译结果dst和语音tts(目前tts未用到，可先返回将来支持语音播放后无需再改插件)
+              // 返回翻译结果dst和语音tts(目前tts未用到)
               RES({
                 dst: res.data.trans_result[0].dst,
                 tts: res.data.trans_result[0].dst_tts
