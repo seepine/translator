@@ -37,9 +37,9 @@ const router = createRouter({
 router.beforeEach(
   (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
     if (to.meta.title) {
-      document.title = `${String(to.meta.title ? to.meta.title : to.name)} - Translater`
+      document.title = `${String(to.meta.title ? to.meta.title : to.name)} - Translator`
     } else {
-      document.title = 'Translater'
+      document.title = 'Translator'
     }
     next()
   }
