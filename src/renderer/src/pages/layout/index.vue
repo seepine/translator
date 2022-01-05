@@ -11,10 +11,11 @@ import navbarVue from './navbar.vue'
 .nav,
 .body {
   background-color: #ffffff !important;
+  // box-shadow: 0 4px 10px rgba(var(--gray-1), 0.4);
 }
 .body {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 .arco-collapse-item-header {
   line-height: 20px !important;

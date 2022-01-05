@@ -122,8 +122,8 @@ const handleQuit = () => {
   background-color: var(--color-bg-3);
   height: 40px;
   -webkit-app-region: drag;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 .icon {
   font-size: 18px;
