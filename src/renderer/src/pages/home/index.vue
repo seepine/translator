@@ -55,11 +55,6 @@ import store from '../../store'
 import { Plug } from '../../types/Plug'
 import axios from '../../utils/axios'
 
-let crypto2: any
-try {
-  crypto2 = window.require('crypto-js')
-  // eslint-disable-next-line no-empty
-} catch (e) {}
 const inputValue = ref('')
 const inputRef = ref()
 
@@ -103,6 +98,7 @@ const handlePlay = (index: number) => {
     const u = new SpeechSynthesisUtterance()
     u.text = resList.value[index]
     u.volume = 0.8
+    u.rate = 0.8
     speechSynthesis.speak(u)
   }
 }
@@ -127,8 +123,7 @@ const toTranslate = () => {
             },
             {
               axios,
-              crypto,
-              crypto2
+              crypto
             }
           )
           .then((res) => {
@@ -158,7 +153,7 @@ const keyListen = (e: KeyboardEvent) => {
     toTranslate()
     return false
   }
-  if (e.code === 'ControlLeft') {
+  if (e.code === 'ControlLeft' || e.code === 'MetaLeft') {
     leftTime = new Date().getTime()
   } else if (e.code === 'KeyC') {
     cTime = new Date().getTime()

@@ -14,7 +14,6 @@ export type PlugColumn = {
 export type Context = {
   axios: AxiosInstance
   crypto: any
-  crypto2: any
 }
 
 export type TranslateInput = {

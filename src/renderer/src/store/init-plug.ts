@@ -18,16 +18,19 @@ export default (store: Store<typeof defaultState>) => {
     .invoke('getCachePath')
     .then((cachePath) => {
       // 添加外置插件
-      const dirs = window.fs.readdirSync(`${cachePath}\\plugs`)
-      dirs.forEach((item) => {
-        const files = window.fs.readdirSync(`${cachePath}\\plugs\\${item}`)
-        if (files.indexOf('index.js') >= 0) {
-          extraPlugs.push({
-            ...window.require(`${cachePath}\\plugs\\${item}\\index.js`),
-            path: `${cachePath}\\plugs\\${item}\\index.js`
-          })
-        }
-      })
+      try {
+        const dirs = window.fs.readdirSync(`${cachePath}\\plugs`)
+        dirs.forEach((item) => {
+          const files = window.fs.readdirSync(`${cachePath}\\plugs\\${item}`)
+          if (files.indexOf('index.js') >= 0) {
+            extraPlugs.push({
+              ...window.require(`${cachePath}\\plugs\\${item}\\index.js`),
+              path: `${cachePath}\\plugs\\${item}\\index.js`
+            })
+          }
+        })
+        // eslint-disable-next-line no-empty
+      } catch (error) {}
     })
     .finally(() => {
       store.commit('setPlugs', {
