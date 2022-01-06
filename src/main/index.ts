@@ -1,15 +1,6 @@
 import os from 'os'
 import path from 'path'
-import {
-  app,
-  BrowserWindow,
-  ipcMain,
-  Menu,
-  nativeTheme,
-  systemPreferences,
-  Tray,
-  nativeImage
-} from 'electron'
+import { app, BrowserWindow, ipcMain, Menu, nativeTheme, systemPreferences, Tray } from 'electron'
 import ipcInit from './ipc-init'
 
 // https://stackoverflow.com/questions/42524606/how-to-get-windows-version-using-node-js
@@ -37,6 +28,7 @@ async function bootstrap() {
     width: 440,
     height: 177,
     webPreferences: {
+      devTools: true,
       webSecurity: false,
       preload: path.join(__dirname, '../preload/index.cjs')
     }
@@ -61,7 +53,7 @@ async function bootstrap() {
   ipcInit(win as BrowserWindow)
   setTimeout(() => {
     win?.show()
-  }, 100)
+  }, 300)
 }
 try {
   ipcMain.on('quit', () => {
@@ -79,33 +71,26 @@ try {
 let tray = null
 
 const initTray = () => {
-  nativeImage
-    .createThumbnailFromPath(path.join(__dirname, '../renderer/icon.png'), {
-      width: 15,
-      height: 15
-    })
-    .then((res) => {
-      tray = new Tray(res)
-      tray.on('double-click', () => {
+  tray = new Tray(path.join(__dirname, '../renderer/icon-tray.png'))
+  tray.on('double-click', () => {
+    win?.show()
+  })
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '显示',
+      click: () => {
         win?.show()
-      })
-      const contextMenu = Menu.buildFromTemplate([
-        {
-          label: '显示',
-          click: () => {
-            win?.show()
-          }
-        },
-        {
-          label: '退出',
-          click: () => {
-            process.exit(0)
-          }
-        }
-      ])
-      tray.setToolTip('translator')
-      tray.setContextMenu(contextMenu)
-    })
+      }
+    },
+    {
+      label: '退出',
+      click: () => {
+        process.exit(0)
+      }
+    }
+  ])
+  tray.setToolTip('translator')
+  tray.setContextMenu(contextMenu)
 }
 app.whenReady().then(() => {
   initTray()
